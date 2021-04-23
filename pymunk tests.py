@@ -81,7 +81,7 @@ class Game(object):
 
     def __init__(self):
         self.space = pymunk.Space() 
-        self.space.gravity = (0.0, 900.0)                              
+        #self.space.gravity = (0.0, 900.0)                             
         self.screen = pygame.display.set_mode((1024, 600))
         self.clock = pygame.time.Clock()
         self.draw_options = pymunk.pygame_util.DrawOptions(self.screen)
@@ -158,11 +158,13 @@ class Game(object):
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
                 if event.key == pygame.K_SPACE:    
-                    ball = Ball(200,0)
+                    ball = Ball(50,200)
                     ball.add_to_space(self.space)
                     self.ballsgroup.append(ball)
+                    ball.hit_ball(500,(5,0))
                 if event.key == pygame.K_1:
-                    self.ballsgroup[0].hit_ball(1000,(5,5))
+                    pass
+                    #self.ballsgroup[0].hit_ball(500,(5,0))
             
             elif event.type == pygame.MOUSEMOTION:
                 if self.dragging == True:
