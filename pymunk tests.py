@@ -25,7 +25,7 @@ class Ball(pygame.sprite.Sprite):
         self.body.position = x, y
         self.shape = pymunk.Circle(self.body, radius, (0, 0))
         self.shape.elasticity = 0.99
-        self.shape.friction = 0.9
+        self.shape.friction = 0.5 #add friction to shape 
         self.collision_type = collision_types["ball"]
         self.dead = False
         #checking to see if images work
@@ -161,7 +161,8 @@ class Game(object):
                     ball = Ball(50,200)
                     ball.add_to_space(self.space)
                     self.ballsgroup.append(ball)
-                    ball.hit_ball(500,(5,0))
+                    directionvector = (random.randint(1,5),random.randint(-1,1))
+                    ball.hit_ball(800,directionvector)
                 if event.key == pygame.K_1:
                     pass
                     #self.ballsgroup[0].hit_ball(500,(5,0))
