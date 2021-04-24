@@ -25,7 +25,8 @@ class Ball(pygame.sprite.Sprite):
         self.body.position = x, y
         self.shape = pymunk.Circle(self.body, radius, (0, 0))
         self.shape.elasticity = 0.99
-        self.shape.friction = 0.5 #add friction to shape 
+        self.shape.density = .0001
+        self.shape.friction = 0.1 #add friction to shape 
         self.collision_type = collision_types["ball"]
         self.dead = False
         #checking to see if images work
@@ -35,8 +36,12 @@ class Ball(pygame.sprite.Sprite):
         self.rect.centery = y
         return
 
-    def add_to_space(self, space):
+    def add_to_space(self, space, table):
         space.add(self.body, self.shape)
+        pivot = pymunk.PivotJoint(self.body, table, (0, 0), (0, 0))
+        pivot.max_bias = 0  # disable joint correction
+        pivot.max_force = 8  # emulate linear friction
+        space.add(pivot)
         return
 
     def hit_ball(self, force, directionvector):
@@ -74,13 +79,18 @@ class Bin(object):
 
     def add_to_space(self, space):
         space.add(self.body, self.shape)
+        #space.add(pivot)
         return
 
 #sets up a new game
 class Game(object):
 
     def __init__(self):
-        self.space = pymunk.Space() 
+        self.space = pymunk.Space()
+
+        self.table = pymunk.Body(body_type=pymunk.Body.KINEMATIC)
+        self.position = 0, 0
+        self.space.add(self.table) 
         #self.space.gravity = (0.0, 900.0)                             
         self.screen = pygame.display.set_mode((1024, 600))
         self.clock = pygame.time.Clock()
@@ -159,10 +169,10 @@ class Game(object):
                     self.running = False
                 if event.key == pygame.K_SPACE:    
                     ball = Ball(50,200)
-                    ball.add_to_space(self.space)
+                    ball.add_to_space(self.space, self.table)
                     self.ballsgroup.append(ball)
                     directionvector = (random.randint(1,5),random.randint(-1,1))
-                    ball.hit_ball(800,directionvector)
+                    ball.hit_ball(10,directionvector)
                 if event.key == pygame.K_1:
                     pass
                     #self.ballsgroup[0].hit_ball(500,(5,0))
